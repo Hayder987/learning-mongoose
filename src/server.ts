@@ -8,9 +8,9 @@ let server: Server;
 
 async function main (){
     try {
-        await mongoose.connect(`mongodb+srv://mongooseAdmin:hayder4290@cluster0.jes9ndo.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`);
+        await mongoose.connect(`mongodb+srv://mongooseAdmin:hayder4290@cluster0.jes9ndo.mongodb.net/note-app?retryWrites=true&w=majority&appName=Cluster0`);
         console.log("connected with mongodb with mongoose")
-        
+
         server = app.listen(PORT, ()=>{
             console.log(`Server Running At port: ${PORT}`)
         })
