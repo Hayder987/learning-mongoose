@@ -1,6 +1,7 @@
 import { model, Schema } from "mongoose";
-import { addressInterface, UserI } from "../interfaces/user.interface";
+import { addressInterface, UserI, UserModelType } from "../interfaces/user.interface";
 import validator from 'validator';
+import bcrypt from "bcryptjs";
 
 const addressSchema = new Schema<addressInterface>({
   city: {type: String},
@@ -12,7 +13,7 @@ const addressSchema = new Schema<addressInterface>({
 }
 )
 
-const userSchema = new Schema<UserI>({
+const userSchema = new Schema<UserI, UserModelType>({
   name: {
     type: String,
     minlength: [4, 'name atleast 4 character'],
@@ -42,6 +43,11 @@ const userSchema = new Schema<UserI>({
     min: [18, 'age must be 18, got {VALUE}'],
     max: 60
   },
+  password:{
+    type: String,
+    required: true,
+    minlength: 4,
+  },
   role:{
     type: String,
     enum: {
@@ -60,4 +66,9 @@ const userSchema = new Schema<UserI>({
 }
 );
 
-export const User = model('User', userSchema);
+userSchema.static('hashPassword', async function (plainPassword:string) {
+  const password = await bcrypt.hash(plainPassword, 10)
+  return password
+});
+
+export const User = model<UserI, UserModelType>('User', userSchema);
