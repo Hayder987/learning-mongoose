@@ -1,20 +1,43 @@
 import { model, Schema } from "mongoose";
 import { UserI } from "../interfaces/user.interface";
+import validator from 'validator';
 
 const userSchema = new Schema<UserI>({
   name: {
     type: String,
+    minlength: [4, 'name atleast 4 character'],
+    maxlength: 20,
     trim: true,
     required: true,
   },
   email: {
     type: String,
+    unique: [true, 'email agei ase'],
+    lowercase:true,
     trim: true,
     required: true,
+    // use validate package
+    validate: [validator.isEmail, "you give email wrong"],
+    // custom
+    // validate:{
+    //   validator: (value)=>{
+    //     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    //   },
+    //   message: (props) => `${props.value} is not a valid email!`
+    // }
+  },
+  age:{
+    type: Number,
+    required:[true, 'age dewa hoy ni'],
+    min: [18, 'age must be 18, got {VALUE}'],
+    max: 60
   },
   role:{
     type: String,
-    enum: ["user", "admin"],
+    enum: {
+      values:["user", "admin"],
+      message:"role will be user and admin, you give {VALUE}"
+    },
     default:"user"
   }
 },
