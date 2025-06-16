@@ -17,7 +17,11 @@ const noteSchema = new Schema<NoteI>(
     tags:{
         label:{type: String, required:true},
         color:{type:String, default:"green"}
-    }  
+    } ,
+    user :{
+        type: Schema.Types.ObjectId,
+        ref: "User"
+    } 
 },
 {
     versionKey:false,

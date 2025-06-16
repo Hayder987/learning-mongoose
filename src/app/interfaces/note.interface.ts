@@ -1,3 +1,4 @@
+import { Types } from "mongoose"
 
 export interface NoteI {
     title: string,
@@ -7,5 +8,6 @@ export interface NoteI {
     tags?: {
         label:string,
         color : string
-    }
+    },
+    user: Types.ObjectId
 };

@@ -1,6 +1,16 @@
 import { model, Schema } from "mongoose";
-import { UserI } from "../interfaces/user.interface";
+import { addressInterface, UserI } from "../interfaces/user.interface";
 import validator from 'validator';
+
+const addressSchema = new Schema<addressInterface>({
+  city: {type: String},
+  road: {type: String},
+  zip : {type: Number},
+},
+{
+  _id: false
+}
+)
 
 const userSchema = new Schema<UserI>({
   name: {
@@ -39,6 +49,9 @@ const userSchema = new Schema<UserI>({
       message:"role will be user and admin, you give {VALUE}"
     },
     default:"user"
+  },
+  address:{
+    type: addressSchema
   }
 },
 {

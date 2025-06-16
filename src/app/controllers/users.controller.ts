@@ -6,10 +6,16 @@ export const userRouter = express.Router();
 
 const userZodSchema = z.object({
   name: z.string(),
-  email: z.string(),
+  email: z.string().email(),      
   age: z.number(),
   role: z.string().optional(),
+  address: z.object({
+    city: z.string(),
+    road: z.string(),
+    zip: z.number(),
+  }),
 });
+
 
 userRouter.post("/add-user", async (req: Request, res: Response) => {
   try {
