@@ -15,6 +15,6 @@ export interface UserI {
   address: addressInterface
 }
 
-export interface UserModelType extends Model<UserI> {
+export interface createHashPassword extends Model<UserI> {
   hashPassword(password:string): string;
 }

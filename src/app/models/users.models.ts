@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { addressInterface, UserI, UserModelType } from "../interfaces/user.interface";
+import { addressInterface, createHashPassword, UserI } from "../interfaces/user.interface";
 import validator from 'validator';
 import bcrypt from "bcryptjs";
 
@@ -13,7 +13,7 @@ const addressSchema = new Schema<addressInterface>({
 }
 )
 
-const userSchema = new Schema<UserI, UserModelType>({
+const userSchema = new Schema<UserI, createHashPassword>({
   name: {
     type: String,
     minlength: [4, 'name atleast 4 character'],
@@ -66,9 +66,19 @@ const userSchema = new Schema<UserI, UserModelType>({
 }
 );
 
-userSchema.static('hashPassword', async function (plainPassword:string) {
-  const password = await bcrypt.hash(plainPassword, 10)
-  return password
+// instance ------------------------>
+// userSchema.static('hashPassword', async function (plainPassword:string) {
+//   const password = await bcrypt.hash(plainPassword, 10)
+//   return password
+// });
+
+// middle ware--------------->
+userSchema.pre("save", async function(){
+  this.password = await bcrypt.hash(this.password, 10)
 });
 
-export const User = model<UserI, UserModelType>('User', userSchema);
+userSchema.post("save", function(doc){
+  console.log(`${doc.email} has been saved`);
+})
+
+export const User = model<UserI, createHashPassword>('User', userSchema);

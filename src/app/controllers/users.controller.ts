@@ -27,9 +27,10 @@ userRouter.post("/add-user", async (req: Request, res: Response) => {
     // const password = await bcrypt.hash(body.password, 10)
     //    body.password = password
 
-    const password = await User.hashPassword(body.password)
 
-    body.password = password
+    //  -----for instance--------
+    // const password = await User.hashPassword(body.password)
+    // body.password = password
     
     const user = await User.create(body);
 
