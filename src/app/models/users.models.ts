@@ -2,6 +2,7 @@ import { model, Schema } from "mongoose";
 import { addressInterface, createHashPassword, UserI } from "../interfaces/user.interface";
 import validator from 'validator';
 import bcrypt from "bcryptjs";
+import Note from "./notes.models";
 
 const addressSchema = new Schema<addressInterface>({
   city: {type: String},
@@ -62,7 +63,9 @@ const userSchema = new Schema<UserI, createHashPassword>({
 },
 {
   versionKey:false,
-  timestamps: true
+  timestamps: true,
+  toJSON:{virtuals:true},
+  toObject: {virtuals: true}
 }
 );
 
@@ -73,12 +76,26 @@ const userSchema = new Schema<UserI, createHashPassword>({
 // });
 
 // middle ware--------------->
-userSchema.pre("save", async function(){
+userSchema.pre("save", async function(next){
   this.password = await bcrypt.hash(this.password, 10)
+  next();
 });
 
-userSchema.post("save", function(doc){
+userSchema.post("save", function(doc, next){
   console.log(`${doc.email} has been saved`);
+  next();
+})
+
+// user delete post hook and also delete user note
+userSchema.post("findOneAndDelete", async function(doc, next){
+  if(doc){
+    await Note.deleteMany({user: doc._id})
+  }
+  next();
+});
+
+userSchema.virtual('nameAndRole').get(function(){
+  return `${this.name} and ${this.role}`
 })
 
 export const User = model<UserI, createHashPassword>('User', userSchema);
